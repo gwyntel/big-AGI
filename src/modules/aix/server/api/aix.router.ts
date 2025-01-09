@@ -25,7 +25,7 @@ export const aixRouter = createTRPCRouter({
       streaming: z.boolean(),
       connectionOptions: AixWire_API.ConnectionOptions_schema.optional(),
     }))
-    .mutation(async function* ({ input, ctx }): AsyncGenerator<AixWire_Particles.ChatGenerateOp> {
+    .mutation(async function* ({ input, ctx }: { input: z.infer<typeof AixWire_API.ChatContentGenerate.Request_schema>; ctx: { reqSignal: AbortSignal } }): AsyncGenerator<AixWire_Particles.ChatGenerateOp> {
 
 
       // Intake derived state
@@ -65,7 +65,7 @@ export const aixRouter = createTRPCRouter({
           method: 'POST',
           headers: dispatch.request.headers,
           body: dispatch.request.body,
-          signal: intakeAbortSignal,
+          signal: ctx.reqSignal.bind(ctx),
           name: `Aix.${prettyDialect}`,
           throwWithoutName: true,
         });
